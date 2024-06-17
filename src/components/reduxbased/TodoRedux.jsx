@@ -1,23 +1,34 @@
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addTodo,
+  deleteTodo,
+  updateTodo,
+} from "../../redux/features/todoSlice";
 import { v4 as uuidv4 } from "uuid";
 
-const Todo = () => {
+const TodoRedux = () => {
+  const dispatch = useDispatch();
+  const { list } = useSelector((state) => state.todo);
   const [text, setText] = useState("");
-  const [list, setList] = useState([]);
   const [selectedItem, setSelectedItem] = useState({});
   const [eidtText, setEditText] = useState("");
   const [editedMode, setEditedMode] = useState(false);
 
-  const handleAddList = () => {
-    if (text.trim !== "") {
+  const handleAdd = () => {
+    if (text.trim() !== "") {
       const newItem = {
         id: uuidv4(),
         text: text.trim(),
       };
-      setList([...list, newItem]);
+      dispatch(addTodo(newItem));
     }
 
     setText("");
+  };
+
+  const handleDelete = (item) => {
+    dispatch(deleteTodo(item));
   };
 
   const handleEdit = (item) => {
@@ -27,26 +38,28 @@ const Todo = () => {
   };
 
   const handleUpdate = () => {
-    const updatedList = list.map(item => item.id === selectedItem.id ? {...item, text: eidtText}: item)
-    setList(updatedList)
-    setSelectedItem({})
+    const payload = {
+      selectedItem,
+      eidtText,
+    };
+
+    dispatch(updateTodo(payload));
+
+    setSelectedItem({});
     setEditText("");
     setEditedMode(false);
   };
 
-  const handleDelete = (item) => {
-    const newList = list.filter((li) => li.id !== item.id);
-    setList(newList);
-  };
-
   return (
     <div>
-      <input
-        type="text"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
-      <button onClick={handleAddList}>Add</button>
+      <div>
+        <input
+          type="text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+        <button onClick={handleAdd}>Add</button>
+      </div>
       {list?.map((item) => (
         <div key={item.id}>
           {item?.text}
@@ -62,7 +75,6 @@ const Todo = () => {
           ) : (
             <button onClick={() => handleEdit(item)}>Edit</button>
           )}
-
           <button onClick={() => handleDelete(item)}>Delete</button>
         </div>
       ))}
@@ -70,4 +82,4 @@ const Todo = () => {
   );
 };
 
-export default Todo;
+export default TodoRedux;

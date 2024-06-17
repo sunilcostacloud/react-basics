@@ -7,6 +7,7 @@ import RadioButton from "./components/RadioButton";
 import Select from "./components/Select";
 import Timer from "./components/Timer";
 import Todo from "./components/Todo";
+import TodoRedux from "./components/reduxbased/TodoRedux";
 
 const App = () => {
   return (
@@ -28,6 +29,9 @@ const App = () => {
       <DateTimePicker />
       <hr />
       <FormExample />
+      <hr />
+      <h1>Todo Redux</h1>
+      <TodoRedux />
       <hr />
     </div>
   );
